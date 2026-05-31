@@ -1,6 +1,6 @@
 name: "APC UPS MQTT"
 description: "Reads data from APC UPS via USB HID and publishes it to MQTT with Home Assistant Auto Discovery"
-version: "1.0.0"
+version: "1.1.0"
 slug: "apc-mqtt"
 startup: application
 init: false

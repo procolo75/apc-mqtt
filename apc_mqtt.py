@@ -18,8 +18,10 @@ MQTT_PASSWORD = os.environ.get("MQTT_PASSWORD", "")
 POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL", 30))
 
 DEVICE_ID     = "apc_ups"
-BASE_TOPIC    = "apc_ups"
 DISCOVERY_PFX = "homeassistant"
+
+# Availability published once per device, state per individual sensor.
+AVAIL_TOPIC = f"{DISCOVERY_PFX}/sensor/{DEVICE_ID}/availability"
 
 SENSORS = [
     {"id": "input_voltage",   "name": "Grid Voltage",    "unit": "V",   "device_class": "voltage", "icon": "mdi:transmission-tower"},
@@ -27,6 +29,18 @@ SENSORS = [
     {"id": "battery_voltage", "name": "Battery Voltage", "unit": "V",   "device_class": "voltage", "icon": "mdi:flash"},
     {"id": "status",          "name": "UPS Status",      "unit": None,  "device_class": None,      "icon": "mdi:power"},
 ]
+
+DEVICE_INFO = {
+    "identifiers": [DEVICE_ID],
+    "name": "APC Back-UPS",
+    "model": "Back-UPS ES 650G2",
+    "manufacturer": "APC",
+}
+
+
+def state_topic(sensor_id: str) -> str:
+    return f"{DISCOVERY_PFX}/sensor/{DEVICE_ID}_{sensor_id}/state"
+
 
 # HIDIOCGFEATURE(n) = (3<<30) | (n<<16) | (ord('H')<<8) | 7
 def _get_feature(fd, report_id, size=8):
@@ -74,18 +88,12 @@ def read_ups_data():
 def publish_discovery(client, sensor):
     topic = f"{DISCOVERY_PFX}/sensor/{DEVICE_ID}/{sensor['id']}/config"
     payload = {
-        "name": sensor["name"],
-        "unique_id": f"{DEVICE_ID}_{sensor['id']}",
-        "state_topic": f"{BASE_TOPIC}/state",
-        "value_template": f"{{{{ value_json.{sensor['id']} }}}}",
-        "availability_topic": f"{BASE_TOPIC}/availability",
-        "icon": sensor["icon"],
-        "device": {
-            "identifiers": [DEVICE_ID],
-            "name": "APC Back-UPS",
-            "model": "Back-UPS ES 650G2",
-            "manufacturer": "APC",
-        },
+        "name":               sensor["name"],
+        "unique_id":          f"{DEVICE_ID}_{sensor['id']}",
+        "state_topic":        state_topic(sensor["id"]),
+        "availability_topic": AVAIL_TOPIC,
+        "icon":               sensor["icon"],
+        "device":             DEVICE_INFO,
     }
     if sensor["unit"]:
         payload["unit_of_measurement"] = sensor["unit"]
@@ -94,15 +102,22 @@ def publish_discovery(client, sensor):
     client.publish(topic, json.dumps(payload), retain=True)
 
 
+def publish_state(client, data: dict):
+    for sensor in SENSORS:
+        value = data.get(sensor["id"])
+        if value is not None:
+            client.publish(state_topic(sensor["id"]), str(value), retain=True)
+
+
 def main():
     client = mqtt.Client(client_id=DEVICE_ID)
     if MQTT_USER:
         client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
-    client.will_set(f"{BASE_TOPIC}/availability", "offline", retain=True)
+    client.will_set(AVAIL_TOPIC, "offline", retain=True)
 
     def on_connect(c, userdata, flags, rc):
         if rc == 0:
-            c.publish(f"{BASE_TOPIC}/availability", "online", retain=True)
+            c.publish(AVAIL_TOPIC, "online", retain=True)
             for sensor in SENSORS:
                 publish_discovery(c, sensor)
         else:
@@ -123,9 +138,9 @@ def main():
         try:
             data = read_ups_data()
             if data:
-                client.publish(f"{BASE_TOPIC}/state", json.dumps(data), retain=True)
+                publish_state(client, data)
             else:
-                client.publish(f"{BASE_TOPIC}/availability", "offline", retain=True)
+                client.publish(AVAIL_TOPIC, "offline", retain=True)
         except Exception as e:
             log.error(f"Loop error: {e}")
         time.sleep(POLL_INTERVAL)
