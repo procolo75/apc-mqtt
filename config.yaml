@@ -1,0 +1,23 @@
+name: "APC UPS MQTT"
+description: "Reads data from APC UPS via USB and publishes it to MQTT with Home Assistant Discovery"
+version: "1.0.0"
+slug: "apc-mqtt"
+startup: application
+init: false
+arch:
+  - amd64
+  - aarch64
+  - armv7
+full_access: true
+options:
+  mqtt_host: "core-mosquitto"
+  mqtt_port: 1883
+  mqtt_user: ""
+  mqtt_password: ""
+  poll_interval: 30
+schema:
+  mqtt_host: str
+  mqtt_port: int
+  mqtt_user: str
+  mqtt_password: str
+  poll_interval: int
