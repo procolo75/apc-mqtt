@@ -1,8 +1,8 @@
-# APC UPS MQTT — Home Assistant Add-on
+# APC UPS MQTT — Home Assistant App
 
-Home Assistant add-on that reads data directly from an APC UPS via USB HID and publishes it to MQTT with Home Assistant Auto Discovery.
+Home Assistant app that reads data directly from an APC UPS via USB HID and publishes it to MQTT with Home Assistant Auto Discovery.
 
-No `apcupsd` daemon required — the add-on talks directly to the HID device.
+No `apcupsd` daemon required — the app talks directly to the HID device.
 
 ## Supported Hardware
 
@@ -14,6 +14,7 @@ Tested on **APC Back-UPS ES 650G2** (USB HID). Should work with most APC Back-UP
 - Publishes sensor data to MQTT at a configurable interval
 - Registers all sensors automatically in Home Assistant via MQTT Discovery
 - Reports `offline` availability when the UPS cannot be read
+- Multi-arch support: `amd64`, `aarch64`, `armv7`
 
 ## Sensors Published
 
@@ -26,10 +27,11 @@ Tested on **APC Back-UPS ES 650G2** (USB HID). Should work with most APC Back-UP
 
 ## Installation
 
-1. In Home Assistant, go to **Settings → Add-ons → Add-on Store**
-2. Click the three-dot menu → **Repositories**
-3. Add this repository URL
-4. Find **APC UPS MQTT** and click **Install**
+1. In Home Assistant go to **Settings → Apps → Install App → ⋮ → Repositories**
+2. Add this repository URL: `https://github.com/procolo75/apc-mqtt`
+3. Find **APC UPS MQTT** in the store and click **Install**
+4. Go to the **Configuration** tab and fill in your MQTT settings
+5. Click **Start**
 
 ## Configuration
 
@@ -41,7 +43,11 @@ mqtt_password: ""           # MQTT password (leave empty if not required)
 poll_interval: 30           # Polling interval in seconds
 ```
 
-The add-on requires `full_access: true` to reach `/dev/hidraw0`.
+The app requires `full_access: true` to reach `/dev/hidraw0`.
+
+## Updating
+
+Home Assistant checks for new versions automatically. When a new version is available, an **Update** button appears in the app page. Click it to update — no configuration changes are required between releases unless explicitly noted in the [CHANGELOG](CHANGELOG.md).
 
 ## MQTT Topics
 
@@ -55,7 +61,7 @@ The add-on requires `full_access: true` to reach `/dev/hidraw0`.
 
 - Home Assistant OS or Supervised
 - APC UPS connected via USB
-- Mosquitto broker (or any MQTT broker accessible from the add-on)
+- Mosquitto broker (or any MQTT broker accessible from the app)
 
 ## License
 
