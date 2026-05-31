@@ -1,12 +1,5 @@
 # Changelog
 
-## [1.1.1] — 2026-05-31
-
-### Fixed
-- Added explicit `devices: [/dev/hidraw0]` in `config.yaml` to ensure the HA
-  Supervisor grants cgroup access to the HID device. `full_access: true` alone
-  is not sufficient for hidraw devices on some HA OS versions.
-
 ## [1.1.0] — 2026-05-31
 
 ### Changed

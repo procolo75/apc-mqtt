@@ -45,6 +45,8 @@ poll_interval: 30           # Polling interval in seconds
 
 The app requires `full_access: true` to reach `/dev/hidraw0`.
 
+> **Important:** after installation, make sure **Protection mode** is **disabled** in the app page (the toggle under the app title). When enabled, Protection mode blocks full host access and prevents the app from opening the USB HID device, causing a `Permission denied` error on `/dev/hidraw0`.
+
 ## Updating
 
 Home Assistant checks for new versions automatically. When a new version is available, an **Update** button appears in the app page. Click it to update — no configuration changes are required between releases unless explicitly noted in the [CHANGELOG](CHANGELOG.md).
@@ -53,9 +55,9 @@ Home Assistant checks for new versions automatically. When a new version is avai
 
 | Topic | Content |
 |-------|---------|
-| `apc_ups/state` | JSON with all sensor values |
-| `apc_ups/availability` | `online` / `offline` |
-| `homeassistant/sensor/apc_ups/<id>/config` | Discovery payloads (retained) |
+| `homeassistant/sensor/apc_ups_{id}/state` | Individual sensor value (retained) |
+| `homeassistant/sensor/apc_ups/availability` | `online` / `offline` (retained) |
+| `homeassistant/sensor/apc_ups/{id}/config` | Discovery payloads (retained) |
 
 ## Requirements
 
