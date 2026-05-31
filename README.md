@@ -47,6 +47,20 @@ The app requires `full_access: true` to reach `/dev/hidraw0`.
 
 > **Important:** after installation, make sure **Protection mode** is **disabled** in the app page (the toggle under the app title). When enabled, Protection mode blocks full host access and prevents the app from opening the USB HID device, causing a `Permission denied` error on `/dev/hidraw0`.
 
+## Sensors in Home Assistant
+
+The app uses **MQTT Auto Discovery**: as soon as it starts, it publishes retained configuration messages to the broker and Home Assistant picks them up automatically — no manual entity configuration required.
+
+For this to work, the **MQTT integration** must be enabled in Home Assistant:
+
+1. Go to **Settings → Devices & Services → Add Integration**
+2. Search for **MQTT** and add it
+3. Enter your broker hostname, port, and credentials (the same ones configured in this app)
+
+Once the integration is active and the app is running, a device called **APC Back-UPS** will appear automatically under **Settings → Devices & Services → MQTT**, with all four sensors ready to use in dashboards and automations.
+
+> If the device does not appear, restart the app — it re-publishes discovery payloads on every startup.
+
 ## Updating
 
 Home Assistant checks for new versions automatically. When a new version is available, an **Update** button appears in the app page. Click it to update — no configuration changes are required between releases unless explicitly noted in the [CHANGELOG](CHANGELOG.md).
