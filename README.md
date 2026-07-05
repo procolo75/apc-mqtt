@@ -63,7 +63,7 @@ Once the integration is active and the app is running, a device called **APC Bac
 
 ## Updating
 
-Home Assistant checks for new versions automatically. When a new version is available, an **Update** button appears in the app page. Click it to update — no configuration changes are required between releases unless explicitly noted in the [CHANGELOG](CHANGELOG.md).
+Home Assistant checks for new versions automatically. When a new version is available, an **Update** button appears in the app page. Click it to update — no configuration changes are required between releases unless explicitly noted in the [CHANGELOG](apc-mqtt/CHANGELOG.md).
 
 ## MQTT Topics
 
