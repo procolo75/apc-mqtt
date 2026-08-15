@@ -18,12 +18,17 @@ Tested on **APC Back-UPS ES 650G2** (USB HID). Should work with most APC Back-UP
 
 ## Sensors Published
 
-| Sensor | Unit | Description |
-|--------|------|-------------|
-| Grid Voltage | V | AC input voltage (0 when on battery) |
-| Battery Charge | % | Current battery charge level |
-| Battery Voltage | V | Battery terminal voltage |
-| UPS Status | — | `online`, `charging`, or `on_battery` |
+| Sensor | Unit | State class | Description |
+|--------|------|-------------|-------------|
+| Grid Voltage | V | `measurement` | AC input voltage (0 when on battery) |
+| Battery Charge | % | `measurement` | Current battery charge level |
+| Battery Voltage | V | `measurement` | Battery terminal voltage |
+| UPS Status | — | — | `online`, `charging`, or `on_battery` |
+
+The three numeric sensors declare `state_class: measurement`, so Home Assistant
+records them into **long-term statistics** (hourly min/max/mean, kept
+indefinitely). UPS Status is a textual value and is excluded from statistics by
+design — Home Assistant only computes statistics for numeric states.
 
 ## Installation
 

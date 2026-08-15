@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1] — 2026-08-15
+
+### Fixed
+- Sensors were never recorded into Home Assistant long-term statistics because
+  the discovery payload did not declare `state_class`. Grid Voltage, Battery
+  Charge and Battery Voltage now publish `state_class: measurement`.
+  UPS Status is textual and stays out of statistics by design.
+
 ## [1.1.0] — 2026-05-31
 
 ### Changed

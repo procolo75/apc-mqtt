@@ -24,10 +24,10 @@ DISCOVERY_PFX = "homeassistant"
 AVAIL_TOPIC = f"{DISCOVERY_PFX}/sensor/{DEVICE_ID}/availability"
 
 SENSORS = [
-    {"id": "input_voltage",   "name": "Grid Voltage",    "unit": "V",   "device_class": "voltage", "icon": "mdi:transmission-tower"},
-    {"id": "battery_charge",  "name": "Battery Charge",  "unit": "%",   "device_class": "battery", "icon": "mdi:battery"},
-    {"id": "battery_voltage", "name": "Battery Voltage", "unit": "V",   "device_class": "voltage", "icon": "mdi:flash"},
-    {"id": "status",          "name": "UPS Status",      "unit": None,  "device_class": None,      "icon": "mdi:power"},
+    {"id": "input_voltage",   "name": "Grid Voltage",    "unit": "V",   "device_class": "voltage", "state_class": "measurement", "icon": "mdi:transmission-tower"},
+    {"id": "battery_charge",  "name": "Battery Charge",  "unit": "%",   "device_class": "battery", "state_class": "measurement", "icon": "mdi:battery"},
+    {"id": "battery_voltage", "name": "Battery Voltage", "unit": "V",   "device_class": "voltage", "state_class": "measurement", "icon": "mdi:flash"},
+    {"id": "status",          "name": "UPS Status",      "unit": None,  "device_class": None,      "state_class": None,          "icon": "mdi:power"},
 ]
 
 DEVICE_INFO = {
@@ -99,6 +99,9 @@ def publish_discovery(client, sensor):
         payload["unit_of_measurement"] = sensor["unit"]
     if sensor["device_class"]:
         payload["device_class"] = sensor["device_class"]
+    # Required for Home Assistant to record the entity into long-term statistics.
+    if sensor["state_class"]:
+        payload["state_class"] = sensor["state_class"]
     client.publish(topic, json.dumps(payload), retain=True)
 
 
